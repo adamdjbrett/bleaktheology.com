@@ -1,0 +1,173 @@
+media:
+  input: src/public/wp-content/uploads
+  output: /wp-content/uploads
+  rename: safe
+  categories: [image, document, video, audio]
+
+content:
+  - name: posts
+    label: Posts
+    type: collection
+    path: src/content/posts
+    format: yaml-frontmatter
+    subfolders: false
+    exclude: [posts.11tydata.js]
+    filename:
+      template: "{primary}.md"
+      field: create
+    operations:
+      rename: false
+    view:
+      fields: [title, date, categories, postTags]
+      primary: title
+      sort: [date, title]
+      search: [title, description, categories, postTags, body]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: date
+        label: Publication date
+        type: date
+        required: true
+        options:
+          format: yyyy-MM-dd
+      - name: description
+        label: Summary
+        type: text
+      - name: categories
+        label: Categories
+        type: string
+        list: true
+      - name: postTags
+        label: Tags
+        type: string
+        list: true
+      - name: body
+        label: Content
+        type: rich-text
+        required: true
+
+  - name: pages
+    label: Pages
+    type: collection
+    path: src/content/pages
+    format: yaml-frontmatter
+    subfolders: false
+    exclude: [pages.11tydata.js]
+    filename:
+      template: "{primary}.md"
+      field: create
+    operations:
+      rename: false
+    view:
+      fields: [title, description]
+      primary: title
+      sort: [title]
+      search: [title, description, body]
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: description
+        label: Summary
+        type: text
+      - name: body
+        label: Content
+        type: rich-text
+        required: true
+
+  - name: metadata
+    label: Site settings
+    type: file
+    path: src/_data/metadata.yml
+    format: yaml
+    operations:
+      create: false
+      rename: false
+      delete: false
+    fields:
+      - name: title
+        type: string
+        required: true
+      - name: tagline
+        type: string
+        required: true
+      - name: description
+        type: text
+        required: true
+      - name: url
+        type: string
+        required: true
+      - name: language
+        type: string
+        required: true
+      - name: locale
+        type: string
+        required: true
+      - name: timezone
+        type: string
+        required: true
+      - name: author
+        type: object
+        required: true
+        fields:
+          - name: name
+            type: string
+            required: true
+          - name: path
+            type: string
+            required: true
+      - name: paths
+        type: object
+        readonly: true
+        fields:
+          - { name: home, type: string }
+          - { name: search, type: string }
+          - { name: categories, type: string }
+          - { name: tags, type: string }
+          - { name: feed, type: string }
+          - { name: sitemap, type: string }
+          - { name: robots, type: string }
+      - name: permalinks
+        type: object
+        readonly: true
+        fields:
+          - { name: post, type: string }
+          - { name: page, type: string }
+          - { name: wordpressPostPattern, type: string }
+      - name: pagination
+        type: object
+        fields:
+          - name: size
+            type: number
+            required: true
+      - name: navigation
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{label}"
+        fields:
+          - { name: label, type: string, required: true }
+          - { name: url, type: string, required: true }
+      - name: social
+        type: object
+        fields:
+          - { name: facebook, type: string }
+          - { name: x, type: string }
+      - name: assets
+        type: object
+        fields:
+          - { name: fonts, type: string }
+          - { name: theme, type: string }
+      - name: search
+        type: object
+        fields:
+          - { name: title, type: string }
+          - { name: showSubResults, type: boolean }

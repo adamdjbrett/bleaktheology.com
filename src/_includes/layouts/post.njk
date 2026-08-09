@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="{{ metadata.language }}" class="no-js no-svg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="{{ description or metadata.description }}">
+  <title>{{ title }} - {{ metadata.title }}</title>
+  <link rel="canonical" href="{{ metadata.url }}{{ page.url }}">
+  <link rel="stylesheet" href="{{ metadata.assets.fonts }}">
+  <link rel="stylesheet" href="{{ metadata.assets.theme }}">
+</head>
+<body class="single single-post wp-theme-typology">
+  <header id="typology-header" class="typology-header"><div class="container"><div class="slot-l"><div class="typology-site-branding"><span class="site-title h4"><a href="{{ metadata.paths.home }}">{{ metadata.title }}</a></span><span class="typology-site-description">{{ metadata.tagline }}</span></div></div></div></header>
+  <div id="typology-cover" class="typology-cover"><div class="typology-cover-item typology-cover-overlay"><div class="cover-item-container"><header class="entry-header"><h1 class="entry-title">{{ title }}</h1><div class="entry-meta"><div class="meta-item meta-author">By {{ metadata.author.name }}</div><div class="meta-item meta-date"><time datetime="{{ date | dateToRfc3339 }}">{{ date | readableDate }}</time></div></div></header><div class="cover-letter">{{ title | first }}</div></div></div></div>
+  <div class="typology-fake-bg"><div class="typology-section"><div class="section-content section-content-a"><article class="typology-single-post"><div class="entry-content clearfix">{{ content | safe }}</div></article></div></div></div>
+</body>
+</html>

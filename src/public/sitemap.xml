@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This sitemap was dynamically generated on August 7, 2026 at 2:43 pm by All in One SEO v5.0.0.1 - the original SEO plugin for WordPress. -->
+
+<?xml-stylesheet type="text/xsl" href="https://www.bleaktheology.com/default-sitemap.xsl?sitemap=root"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+	<sitemap>
+		<loc><![CDATA[https://www.bleaktheology.com/addl-sitemap.xml]]></loc>
+		<lastmod><![CDATA[2026-07-15T20:47:42+00:00]]></lastmod>
+	</sitemap>
+	<sitemap>
+		<loc><![CDATA[https://www.bleaktheology.com/post-sitemap.xml]]></loc>
+		<lastmod><![CDATA[2026-07-15T20:47:42+00:00]]></lastmod>
+	</sitemap>
+	<sitemap>
+		<loc><![CDATA[https://www.bleaktheology.com/page-sitemap.xml]]></loc>
+		<lastmod><![CDATA[2026-01-02T00:04:21+00:00]]></lastmod>
+	</sitemap>
+	<sitemap>
+		<loc><![CDATA[https://www.bleaktheology.com/category-sitemap.xml]]></loc>
+		<lastmod><![CDATA[2026-02-19T15:10:54+00:00]]></lastmod>
+	</sitemap>
+	<sitemap>
+		<loc><![CDATA[https://www.bleaktheology.com/post_tag-sitemap.xml]]></loc>
+		<lastmod><![CDATA[2026-07-15T20:47:42+00:00]]></lastmod>
+	</sitemap>
+</sitemapindex>
