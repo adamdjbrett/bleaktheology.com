@@ -7,7 +7,7 @@ language: en-US
 locale: en_US
 timezone: America/New_York
 logo: ""
-icon: /assets/images/favicon.svg
+icon: /wp-content/uploads/favicon/favicon.svg
 cover_image: ""
 feed_limit: 50
 subscribe_url: /feed/feed.xml

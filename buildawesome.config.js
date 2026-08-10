@@ -28,6 +28,7 @@ export default async function (buildAwesomeConfig) {
 		buildAwesomeConfig.addPassthroughCopy({ [`./static-assets/${name}`]: `/${name}` });
 	}
 	buildAwesomeConfig.addPassthroughCopy({ "./static-assets/wp-content/uploads": "/wp-content/uploads" });
+	buildAwesomeConfig.addPassthroughCopy({ "./static-assets/wp-content/uploads/favicon/favicon.ico": "/favicon.ico" });
 	buildAwesomeConfig.addWatchTarget("src/assets/css/**/*.css");
 	buildAwesomeConfig.addWatchTarget("src/assets/js/**/*.js");
 	buildAwesomeConfig.addPlugin(pluginFilters);

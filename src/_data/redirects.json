@@ -1,6 +1,9 @@
 [
   { "url": "/feed/", "target": "/feed/feed.xml" },
   { "url": "/feed.xml", "target": "/feed/feed.xml" },
+  { "url": "/wp-admin/", "target": "https://app.pagescms.org/" },
+  { "url": "/wp-login/", "target": "https://app.pagescms.org/" },
+  { "url": "/login/", "target": "https://app.pagescms.org/" },
   { "url": "/cherub/", "target": "/wp-content/uploads/2012/12/cherub.jpeg" },
   { "url": "/2012/07/15/the-gods-of-the-seventeenth-century-1/index", "target": "/2012/07/15/the-gods-of-the-seventeenth-century-1/" },
   { "url": "/2013/01/07/breathing-a-life-of-gathering-gloom/index", "target": "/2013/01/07/breathing-a-life-of-gathering-gloom/" },
