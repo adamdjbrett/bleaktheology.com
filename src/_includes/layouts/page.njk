@@ -1,17 +1,46 @@
-<!doctype html>
-<html lang="{{ metadata.language }}" class="no-js no-svg">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="{{ description or metadata.description }}">
-  <title>{{ title }} - {{ metadata.title }}</title>
-  <link rel="canonical" href="{{ metadata.url }}{{ page.url }}">
-  <link rel="stylesheet" href="{{ metadata.assets.fonts }}">
-  <link rel="stylesheet" href="{{ metadata.assets.theme }}">
-</head>
-<body class="page wp-theme-typology">
-  <header id="typology-header" class="typology-header"><div class="container"><div class="slot-l"><div class="typology-site-branding"><span class="site-title h4"><a href="{{ metadata.paths.home }}">{{ metadata.title }}</a></span><span class="typology-site-description">{{ metadata.tagline }}</span></div></div></div></header>
-  <div id="typology-cover" class="typology-cover"><div class="typology-cover-item typology-cover-overlay"><div class="cover-item-container"><header class="entry-header"><h1 class="entry-title">{{ title }}</h1></header><div class="cover-letter">{{ title | first }}</div></div></div></div>
-  <div class="typology-fake-bg"><div class="typology-section"><div class="section-content section-content-page"><article><div class="entry-content clearfix">{{ content | safe }}</div></article></div></div></div>
-</body>
-</html>
+---
+layout: layouts/default.njk
+bodyClass: page-template
+---
+{#- Static page layout (was page.hbs). `show_title_and_feature_image`
+    defaults to true when not set in front matter. -#}
+{% set post = {
+	url: page.url,
+	date: page.date,
+	content: content,
+	data: {
+		title: title,
+		custom_excerpt: custom_excerpt,
+		feature_image: feature_image,
+		feature_image_alt: feature_image_alt,
+		feature_image_caption: feature_image_caption,
+		feature_image_width: feature_image_width,
+		feature_image_height: feature_image_height,
+		authors: authors,
+		tags: tags,
+		template: template
+	}
+} %}
+
+<main class="gh-main">
+	{% include "partials/breadcrumbs.njk" %}
+	<article class="gh-article page" data-pagefind-body>
+
+		{% if show_title_and_feature_image != false %}
+			<header class="gh-article-header gh-canvas">
+				<h1 class="gh-article-title">{{ title }}</h1>
+
+				{% if custom_excerpt %}
+					<p class="gh-article-excerpt">{{ custom_excerpt }}</p>
+				{% endif %}
+
+				{% include "partials/feature-image.njk" %}
+			</header>
+		{% endif %}
+
+		<section class="gh-content gh-canvas">
+			{{ content | safe }}
+		</section>
+
+	</article>
+</main>

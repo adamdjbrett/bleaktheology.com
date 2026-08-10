@@ -1,0 +1,27 @@
+/* Hallmark · genre: editorial · macrostructure: Index-First · theme: Headline · enrichment: none · nav: N6 · footer: Ft1
+ * critique: philosophy=5 hierarchy=5 execution=4 specificity=5 restraint=5 variety=5 · contrast: pass (40–41) · slop: pass (42–57)
+ */
+:root {
+	--color-paper: #f7f5f0;
+	--color-ink: #1d1c1a;
+	--color-accent: #8e1e24;
+	--color-accent-ink: #f7f5f0;
+	--font-display: Lora, Georgia, Times, serif;
+	--font-body: Lora, Georgia, Times, serif;
+	--space-3xs: 0.25rem;
+	--space-2xs: 0.5rem;
+	--space-xs: 0.75rem;
+	--space-sm: 1rem;
+	--space-md: 1.5rem;
+	--space-lg: 2rem;
+	--space-xl: 3rem;
+	--space-2xl: 4rem;
+	--space-3xl: 6rem;
+	--space-4xl: 8rem;
+	--text-body: 1.6rem;
+	--text-display: clamp(3.6rem, 6vw, 7.2rem);
+	--ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+	--dur-fast: 160ms;
+	--rule-hairline: 1px;
+	--radius-control: 0.25rem;
+}

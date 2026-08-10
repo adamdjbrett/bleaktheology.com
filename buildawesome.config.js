@@ -1,108 +1,118 @@
+import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
-import { load } from "js-yaml";
+import { resolve } from "node:path";
+import { load as loadYaml } from "js-yaml";
+import markdownIt from "markdown-it";
+import markdownItAnchor from "markdown-it-anchor";
+import markdownItFootnote from "markdown-it-footnote";
+import pluginTOC from "@uncenter/eleventy-plugin-toc";
+import pluginFilters from "./_config/filters.js";
+import { normalizeTerms, publicPostTags } from "./_config/taxonomy.js";
+import { convertWordPressCaptions } from "./_config/wordpress-caption.js";
 
-const metadata = load(readFileSync("src/_data/metadata.yml", "utf8"));
-const timeZone = metadata.timezone;
-process.env.TZ = timeZone;
-const archive = JSON.parse(readFileSync("src/_data/archive.json", "utf8"));
-const pageSize = metadata.pagination.size;
-let memoizedPosts;
-const memoizedTaxonomies = new Map();
+export default async function (buildAwesomeConfig) {
+	buildAwesomeConfig.addDataExtension("yaml", loadYaml);
+	buildAwesomeConfig.addGlobalData("siteAuthors", () =>
+		loadYaml(readFileSync("src/_data/authors.yaml", "utf8")) || [],
+	);
 
-function slugify(value) {
-  return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+	buildAwesomeConfig.addPreprocessor("drafts", "*", (data) => {
+		const inDrafts = data.page?.inputPath?.includes("/src/_drafts/");
+		if (process.env.ELEVENTY_RUN_MODE === "build" && (inDrafts || data.published === false)) {
+			return false;
+		}
+	});
+
+	buildAwesomeConfig.addPassthroughCopy({ "./src/assets": "/assets" });
+	for (const name of ["audio.buzzsprout.com", "comments", "external", "feed", "storage.buzzsprout.com", "www.azleg.gov"]) {
+		buildAwesomeConfig.addPassthroughCopy({ [`./static-assets/${name}`]: `/${name}` });
+	}
+	buildAwesomeConfig.addPassthroughCopy({ "./static-assets/wp-content/uploads": "/wp-content/uploads" });
+	buildAwesomeConfig.addWatchTarget("src/assets/css/**/*.css");
+	buildAwesomeConfig.addWatchTarget("src/assets/js/**/*.js");
+	buildAwesomeConfig.addPlugin(pluginFilters);
+	buildAwesomeConfig.addPlugin(pluginTOC, {
+		tags: ["h2", "h3", "h4"],
+		wrapper: (items) =>
+			`<nav id="toc" class="post-toc" aria-labelledby="toc-title"><h2 id="toc-title">Contents</h2>${items}</nav>`,
+	});
+
+	const markdown = markdownIt({ html: true, linkify: true, typographer: true })
+		.use(markdownItFootnote)
+		.use(markdownItAnchor, {
+			level: [2, 3, 4],
+			slugify: (value) => buildAwesomeConfig.getFilter("slugify")(value),
+		});
+	markdown.core.ruler.before("block", "wordpress-caption", (state) => {
+		state.src = convertWordPressCaptions(state.src);
+	});
+	buildAwesomeConfig.setLibrary("md", markdown);
+
+	let contentCache;
+	const content = (api) => {
+		if (contentCache) return contentCache;
+		const posts = api.getFilteredByTag("posts").sort((a, b) => b.date - a.date);
+		const pages = api.getFilteredByTag("pages");
+		const buildTerms = (type) => {
+			const groups = new Map();
+			for (const post of posts) {
+				const values = type === "tag" ? publicPostTags(post.data) : post.data.categories;
+				for (const term of normalizeTerms(values, type, (value) => buildAwesomeConfig.getFilter("slugify")(value))) {
+					const key = term.url.toLowerCase();
+					const group = groups.get(key) || { ...term, posts: [] };
+					group.posts.push(post);
+					groups.set(key, group);
+				}
+			}
+			return [...groups.values()]
+				.map((term) => ({ ...term, count: term.posts.length }))
+				.sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+		};
+		contentCache = { posts, pages, tags: buildTerms("tag"), categories: buildTerms("category") };
+		return contentCache;
+	};
+	const pageSize = 5;
+	const paged = (term, type) => Array.from({ length: Math.ceil(term.posts.length / pageSize) }, (_, index) => ({
+		...term,
+		type,
+		posts: term.posts.slice(index * pageSize, (index + 1) * pageSize),
+		pageNumber: index + 1,
+		pageCount: Math.ceil(term.posts.length / pageSize),
+		outputUrl: index ? `${term.url}page/${index + 1}/` : term.url,
+	}));
+
+	buildAwesomeConfig.on("eleventy.before", () => { contentCache = undefined; });
+	buildAwesomeConfig.addCollection("posts", (api) => content(api).posts);
+	buildAwesomeConfig.addCollection("pages", (api) => content(api).pages);
+	buildAwesomeConfig.addCollection("tags", (api) => content(api).tags);
+	buildAwesomeConfig.addCollection("topics", (api) => content(api).tags);
+	buildAwesomeConfig.addCollection("categories", (api) => content(api).categories);
+	buildAwesomeConfig.addCollection("taxonomyPages", (api) => [
+		...content(api).tags.flatMap((term) => paged(term, "Tag")),
+		...content(api).categories.flatMap((term) => paged(term, "Category")),
+	]);
+	buildAwesomeConfig.addCollection("listingPages", (api) => {
+		const values = content(api).posts;
+		const pages = (url) => Array.from({ length: Math.ceil(values.length / pageSize) - 1 }, (_, index) => ({
+			url,
+			posts: values.slice((index + 1) * pageSize, (index + 2) * pageSize),
+			pageNumber: index + 2,
+			pageCount: Math.ceil(values.length / pageSize),
+			outputUrl: `${url}page/${index + 2}/`,
+		}));
+		return [...pages("/"), ...pages("/author/admin/")];
+	});
+
+	buildAwesomeConfig.on("eleventy.after", ({ dir }) => {
+		if (process.env.ELEVENTY_RUN_MODE !== "build") return;
+		const executable = resolve("node_modules", ".bin", process.platform === "win32" ? "pagefind.cmd" : "pagefind");
+		execFileSync(executable, ["--site", dir.output, "--glob", "**/*.html"], { stdio: "inherit" });
+	});
 }
 
-function futurePosts(collectionApi) {
-  return collectionApi.getFilteredByTag("posts").map((item) => ({
-    title: item.data.title || "",
-    displayTitle: item.data.title || "Untitled",
-    date: new Date(item.data.date).toISOString(),
-    url: item.url,
-    categories: (item.data.categories || []).map((name) => ({ name, url: `${metadata.paths.categories}${slugify(name)}/` })),
-    tags: (item.data.postTags || []).map((name) => ({ name, url: `${metadata.paths.tags}${slugify(name)}/` })),
-    excerpt: item.data.description || ""
-  }));
-}
-
-function posts(collectionApi) {
-  if (memoizedPosts) return memoizedPosts;
-  const values = [...archive.posts, ...futurePosts(collectionApi)].sort((a, b) => b.date.localeCompare(a.date));
-  const duplicate = values.find((post, index) => values.findIndex((other) => other.url === post.url) !== index);
-  if (duplicate) throw new Error(`Duplicate post URL: ${duplicate.url}`);
-  return memoizedPosts = values;
-}
-
-function taxonomies(collectionApi, field, basePath) {
-  if (memoizedTaxonomies.has(field)) return memoizedTaxonomies.get(field);
-  const groups = new Map();
-  for (const post of posts(collectionApi)) {
-    for (const term of post[field] || []) {
-      const value = typeof term === "string" ? { name: term, url: `${basePath}${slugify(term)}/` } : term;
-      const group = groups.get(value.url) || { name: value.name, url: value.url, posts: [] };
-      group.posts.push(post);
-      groups.set(value.url, group);
-    }
-  }
-  const values = [...groups.values()].sort((a, b) => a.name.localeCompare(b.name));
-  memoizedTaxonomies.set(field, values);
-  return values;
-}
-
-function taxonomyPages(collectionApi) {
-  return [
-    ...taxonomies(collectionApi, "categories", metadata.paths.categories).map((item) => ({ ...item, type: "Category" })),
-    ...taxonomies(collectionApi, "tags", metadata.paths.tags).map((item) => ({ ...item, type: "Tag" }))
-  ].flatMap((item) => {
-    const chunks = Array.from({ length: Math.ceil(item.posts.length / pageSize) }, (_, index) => ({
-      ...item,
-      posts: item.posts.slice(index * pageSize, (index + 1) * pageSize),
-      pageNumber: index + 1,
-      pageCount: Math.ceil(item.posts.length / pageSize),
-      outputUrl: index ? `${item.url}page/${index + 1}/` : item.url
-    }));
-    return chunks;
-  });
-}
-
-function listingPages(collectionApi) {
-  const values = posts(collectionApi);
-  const chunks = (base, type, name, skipFirst = false) => Array.from({ length: Math.ceil(values.length / pageSize) }, (_, index) => ({
-    type,
-    name,
-    url: base,
-    posts: values.slice(index * pageSize, (index + 1) * pageSize),
-    pageNumber: index + 1,
-    pageCount: Math.ceil(values.length / pageSize),
-    outputUrl: index ? `${base}page/${index + 1}/` : base
-  })).slice(skipFirst ? 1 : 0);
-  return [
-    ...chunks(metadata.paths.home, "Archive", "Latest stories", true),
-    ...chunks(metadata.author.path, "Author", metadata.author.name)
-  ];
-}
-
-export default function (eleventyConfig) {
-  eleventyConfig.on("eleventy.before", () => {
-    memoizedPosts = undefined;
-    memoizedTaxonomies.clear();
-  });
-  eleventyConfig.addDataExtension("yml", load);
-  eleventyConfig.addDataExtension("yaml", load);
-  eleventyConfig.addFilter("readableDate", (value) => new Intl.DateTimeFormat("en-US", { year: "numeric", month: "long", day: "numeric", timeZone }).format(new Date(value)));
-  eleventyConfig.addFilter("dateToRfc3339", (value) => new Date(value).toISOString());
-  eleventyConfig.addPassthroughCopy({ "src/public": "." });
-
-  eleventyConfig.addCollection("posts", posts);
-  eleventyConfig.addCollection("pages", (api) => [...archive.pages, ...api.getFilteredByTag("pages")]);
-  eleventyConfig.addCollection("categories", (api) => taxonomies(api, "categories", metadata.paths.categories));
-  eleventyConfig.addCollection("tags", (api) => taxonomies(api, "tags", metadata.paths.tags));
-  eleventyConfig.addCollection("archivePages", (api) => [...taxonomyPages(api), ...listingPages(api)]);
-
-  return {
-    dir: { input: "src", output: "_site", includes: "_includes", data: "_data" },
-    templateFormats: ["md", "njk", "11ty.js"],
-    htmlTemplateEngine: false,
-    markdownTemplateEngine: "njk"
-  };
-}
+export const config = {
+	templateFormats: ["md", "njk", "html", "11ty.js"],
+	markdownTemplateEngine: "njk",
+	htmlTemplateEngine: false,
+	dir: { input: "src", includes: "_includes", data: "_data", output: "_site" },
+};

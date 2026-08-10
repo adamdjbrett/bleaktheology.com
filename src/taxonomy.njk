@@ -1,0 +1,29 @@
+---
+layout: layouts/default.njk
+bodyClass: tag-template
+pagination:
+  data: collections.taxonomyPages
+  size: 1
+  alias: archive
+permalink: "{{ archive.outputUrl }}"
+eleventyComputed:
+  title: "{{ archive.name }}"
+---
+<main class="gh-main gh-outer">
+	<div class="gh-inner">
+		<section class="gh-pagehead">
+			<h1 class="gh-pagehead-title">{{ archive.name }}</h1>
+		</section>
+		<div class="gh-topic gh-topic-grid">
+			<div class="gh-topic-content gh-feed">
+				{% for post in archive.posts %}{% include "partials/loop-grid.njk" %}{% endfor %}
+			</div>
+		</div>
+		{% if archive.pageCount > 1 %}
+		<nav class="gh-pagination" aria-label="{{ archive.type }} archive pages">
+			{% if archive.pageNumber > 1 %}<a class="gh-pagination-newer" href="{% if archive.pageNumber == 2 %}{{ archive.url }}{% else %}{{ archive.url }}page/{{ archive.pageNumber - 1 }}/{% endif %}">Newer Posts</a>{% endif %}
+			{% if archive.pageNumber < archive.pageCount %}<a class="gh-pagination-older" href="{{ archive.url }}page/{{ archive.pageNumber + 1 }}/">Older Posts</a>{% endif %}
+		</nav>
+		{% endif %}
+	</div>
+</main>

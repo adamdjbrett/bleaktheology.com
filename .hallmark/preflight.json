@@ -1,0 +1,8 @@
+{
+  "date": "2026-08-09",
+  "project": "Eleventy/Build Awesome editorial archive",
+  "framework": "11ty-Headline 2.0",
+  "content": "279 WordPress posts and 3 pages",
+  "designSystem": "Headline CSS and local Inter/Lora fonts",
+  "constraints": ["preserve dated URLs", "preserve taxonomy URLs", "preserve WordPress body classes", "no Jetpack", "only referenced legacy assets remain in the repository"]
+}

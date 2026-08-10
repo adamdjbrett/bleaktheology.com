@@ -1,0 +1,12 @@
+{
+  "name": "@awesome.com/buildawesome",
+  "version": "4.0.0-alpha.10",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "buildawesome": "cmd.js"
+  },
+  "dependencies": {
+    "@awesome.me/buildawesome": "4.0.0-alpha.10"
+  }
+}

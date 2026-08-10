@@ -1,11 +1,11 @@
 # Bleak Theology
 
-Build Awesome (Eleventy 4) preserves the public archive in `src/public/`, publishes it at the original WordPress routes, and generates category/tag archives plus Pagefind search. Site-wide values live in `src/_data/metadata.yml`.
+Bleak Theology uses the Headline 2.0 theme on Build Awesome (Eleventy 4). The 279 imported posts are editable source files under `src/posts/`; their WordPress block markup, metadata, and `/YYYY/MM/DD/slug/` routes are preserved. Pages live in `src/pages/`, while referenced archive media lives in `static-assets/`.
 
-Dates use the `America/New_York` timezone to preserve the WordPress publication calendar.
+Site values and the `America/New_York` publication timezone live in `src/_data/metadata.yaml`. Categories and tags are memoized once per build and retain their historical nested URLs and pagination.
 
-- `npm run build` builds and verifies `_site/`.
-- `npm run serve` starts the local site.
-- Add future posts to `src/content/posts/` with `title`, `date: YYYY-MM-DD`, optional `slug`, `categories`, and `postTags`; their permalink is always `/YYYY/MM/DD/slug/`.
-- Add future pages to `src/content/pages/` with `title` and optional `slug`; their permalink is always `/slug/`.
-- Manage future posts, pages, uploads, and site settings through [Pages CMS](https://app.pagescms.org/); its repository configuration is `.pages.yml`.
+- `npm run dev` starts `http://localhost:8080/`.
+- `npx @awesome.com/buildawesome --serve` starts the same development server.
+- `npm run build` builds `_site/`, runs Pagefind 1.5.2, checks routes/assets/links, and validates the archive against the ignored WordPress XML export.
+- New post filenames must begin `YYYY-MM-DD-`; their output remains `/YYYY/MM/DD/slug/`.
+- Pages CMS manages posts, pages, media, authors, navigation, metadata, and theme settings through `.pages.yml`.

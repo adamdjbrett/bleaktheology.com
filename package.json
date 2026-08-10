@@ -3,13 +3,20 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "rm -rf _site && buildawesome && pagefind --site _site && node scripts/verify-build.mjs",
-    "serve": "buildawesome --serve --incremental",
-    "import": "ruby scripts/import-archive.rb"
+    "build": "rm -rf _site && buildawesome && node scripts/verify-build.mjs && ruby scripts/verify-wordpress-export.rb",
+    "dev": "buildawesome --serve --port=8080",
+    "serve": "buildawesome --serve --port=8080"
   },
   "devDependencies": {
+    "@awesome.com/buildawesome": "file:vendor/buildawesome-compat",
     "@awesome.me/buildawesome": "4.0.0-alpha.10",
+    "@uncenter/eleventy-plugin-toc": "2.1.2",
+    "cross-env": "^10.1.0",
     "js-yaml": "5.2.3",
+    "luxon": "^3.7.2",
+    "markdown-it": "15.0.0",
+    "markdown-it-anchor": "9.2.1",
+    "markdown-it-footnote": "4.0.0",
     "pagefind": "1.5.2"
   },
   "allowScripts": {

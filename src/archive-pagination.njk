@@ -1,0 +1,22 @@
+---
+layout: layouts/default.njk
+bodyClass: paged-template
+title: Archive
+pagination:
+  data: collections.listingPages
+  size: 1
+  alias: archive
+permalink: "{{ archive.outputUrl }}"
+---
+<main class="gh-main gh-outer">
+	<div class="gh-inner">
+		<section class="gh-pagehead"><h1 class="gh-pagehead-title">Archive</h1></section>
+		<div class="gh-topic gh-topic-grid"><div class="gh-topic-content gh-feed">
+			{% for post in archive.posts %}{% include "partials/loop-grid.njk" %}{% endfor %}
+		</div></div>
+		<nav class="gh-pagination" aria-label="Archive pages">
+			<a class="gh-pagination-newer" href="{% if archive.pageNumber == 2 %}{{ archive.url }}{% else %}{{ archive.url }}page/{{ archive.pageNumber - 1 }}/{% endif %}">Newer Posts</a>
+			{% if archive.pageNumber < archive.pageCount %}<a class="gh-pagination-older" href="{{ archive.url }}page/{{ archive.pageNumber + 1 }}/">Older Posts</a>{% endif %}
+		</nav>
+	</div>
+</main>

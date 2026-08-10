@@ -1,0 +1,29 @@
+# Canonical site metadata. Dates render in the historical WordPress timezone.
+title: Bleak Theology
+description: A theology of loss, lamentation, and elegy.
+tagline: A post-punk counterweight to joy.
+url: https://www.bleaktheology.com
+language: en-US
+locale: en_US
+timezone: America/New_York
+logo: ""
+icon: /assets/images/favicon.svg
+cover_image: ""
+subscribe_url: /feed/
+subscribe:
+  text: Subscribe
+  footer_text: Subscribe
+  url: /feed/
+footer:
+  copyright_holder: Bleak Theology
+  rights: All rights reserved.
+organization:
+  name: Bleak Theology
+  url: https://www.bleaktheology.com/
+social_accounts:
+  - type: facebook
+    name: Facebook
+    href: https://www.facebook.com/bleaktheology/
+  - type: x
+    name: X
+    href: https://twitter.com/bleaktheology
