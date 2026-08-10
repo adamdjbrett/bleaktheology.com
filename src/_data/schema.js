@@ -54,7 +54,7 @@ if (organizationMeta.address) {
 		addressCountry: organizationMeta.address.country,
 	};
 }
-const sameAs = (meta.social_accounts || []).map((account) => account.href).filter(Boolean);
+const sameAs = (meta.social_accounts || []).map((account) => account.href).filter((href) => /^https?:\/\//.test(href));
 if (sameAs.length) organization.sameAs = sameAs;
 
 const publisher = { "@id": organizationId };

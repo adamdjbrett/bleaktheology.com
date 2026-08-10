@@ -9,11 +9,12 @@ timezone: America/New_York
 logo: ""
 icon: /assets/images/favicon.svg
 cover_image: ""
-subscribe_url: /feed/
+feed_limit: 50
+subscribe_url: /feed/feed.xml
 subscribe:
   text: Subscribe
   footer_text: Subscribe
-  url: /feed/
+  url: /feed/feed.xml
 footer:
   copyright_holder: Bleak Theology
   rights: All rights reserved.
@@ -21,9 +22,18 @@ organization:
   name: Bleak Theology
   url: https://www.bleaktheology.com/
 social_accounts:
+  - type: bluesky
+    name: Bluesky
+    href: https://bsky.app/profile/bleaktheology.bsky.social
   - type: facebook
     name: Facebook
     href: https://www.facebook.com/bleaktheology/
-  - type: x
-    name: X
-    href: https://twitter.com/bleaktheology
+  - type: instagram
+    name: Instagram
+    href: https://www.instagram.com/bleaktheology/
+  - type: mastodon
+    name: Mastodon
+    href: https://hcommons.social/@bleaktheology@religion.masto.host
+  - type: rss
+    name: RSS
+    href: /feed/feed.rss

@@ -1,0 +1,29 @@
+---
+permalink: /humans.txt
+eleventyExcludeFromCollections: true
+---
+/* TEAM */
+{% for author in siteAuthors %}
+Name: {{ author.name }}
+Role: Author
+About: {{ author.bio }}
+Location: {{ author.location }}
+Site: {{ author.website }}
+{% if not loop.last %}
+{% endif %}
+{% endfor %}
+/* CREDITS */
+
+Static site generator: Build Awesome (Eleventy 4)
+Build Awesome team: https://build.awesome.me/
+Original theme: Headline by Ghost
+Headline theme: https://github.com/TryGhost/Headline
+Modification: Headline 2.0 adapted for Bleak Theology
+
+/* SITE */
+
+Name: {{ metadata.title }}
+Description: {{ metadata.description }}
+Language: {{ metadata.language }}
+Timezone: {{ metadata.timezone }}
+URL: {{ metadata.url }}/

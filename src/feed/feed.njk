@@ -1,27 +1,29 @@
 ---
-permalink: /feed.xml
+permalink: /feed/feed.xml
 eleventyExcludeFromCollections: true
 ---
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="/feed/pretty-atom-feed.xsl"?>
+<?xml-stylesheet type="text/xsl" href="/feed/feed.xsl"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<title>{{ metadata.title }}</title>
 	<subtitle>{{ metadata.description }}</subtitle>
-	<link href="{{ metadata.url }}/feed.xml" rel="self"/>
+	<link href="{{ metadata.url }}/feed/feed.xml" rel="self" type="application/atom+xml"/>
+	<link href="{{ metadata.url }}/feed/feed.rss" rel="alternate" type="application/rss+xml"/>
 	<link href="{{ metadata.url }}/"/>
 	<id>{{ metadata.url }}/</id>
 	{%- set newest = collections.posts | head(1) %}
 	{%- if newest.length %}
-	<updated>{{ newest[0].date | htmlDateString }}T00:00:00Z</updated>
+	<updated>{{ newest[0].date | rfc3339 }}</updated>
 	{%- else %}
-	<updated>{{ page.date | htmlDateString }}T00:00:00Z</updated>
+	<updated>{{ page.date | rfc3339 }}</updated>
 	{%- endif %}
-	{%- for post in collections.posts | head(20) %}
+	{%- for post in collections.posts | head(metadata.feed_limit) %}
 	<entry>
 		<title>{{ post.data.title }}</title>
 		<link href="{{ metadata.url }}{{ post.url }}"/>
 		<id>{{ metadata.url }}{{ post.url }}</id>
-		<updated>{{ post.date | htmlDateString }}T00:00:00Z</updated>
+		<published>{{ post.date | rfc3339 }}</published>
+		<updated>{{ post.date | rfc3339 }}</updated>
 		{%- for a in (post.data.authors | resolveAuthors(siteAuthors)) %}
 		<author><name>{{ a.name }}</name></author>
 		{%- endfor %}
