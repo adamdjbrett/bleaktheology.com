@@ -1,3 +1,4 @@
+[![Deploy to Xmit](https://github.com/adamdjbrett/bleaktheology.com/actions/workflows/xmit-deploy.yaml/badge.svg)](https://github.com/adamdjbrett/bleaktheology.com/actions/workflows/xmit-deploy.yaml)
 # Bleak Theology
 
 Bleak Theology uses the Headline 2.0 theme on Build Awesome (Eleventy 4). The 279 imported posts are editable source files under `src/posts/`; their WordPress block markup, metadata, and `/YYYY/MM/DD/slug/` routes are preserved. Pages live in `src/pages/`, while referenced archive media lives in `static-assets/`.
