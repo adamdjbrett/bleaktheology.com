@@ -17,8 +17,9 @@ export default async function (buildAwesomeConfig) {
 	);
 
 	buildAwesomeConfig.addPreprocessor("drafts", "*", (data) => {
-		const inDrafts = data.page?.inputPath?.includes("/src/_drafts/");
-		if (process.env.ELEVENTY_RUN_MODE === "build" && (inDrafts || data.published === false)) {
+		const inputPath = data.page?.inputPath?.replaceAll("\\", "/");
+		const inDrafts = inputPath?.includes("/src/_drafts/");
+		if (inDrafts || (process.env.ELEVENTY_RUN_MODE === "build" && data.published === false)) {
 			return false;
 		}
 	});

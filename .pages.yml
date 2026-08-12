@@ -37,8 +37,10 @@ content:
         label: Authors
         type: string
         list: true
+        default: [burke]
         options:
-          values: [burke]
+          values:
+            - { label: Admin, value: burke }
       - name: categories
         label: Categories
         type: object
@@ -63,7 +65,7 @@ content:
       - { name: published, label: Published (uncheck = draft), type: boolean, default: true }
       - { name: body, label: Body, type: rich-text }
 
-  # --- Drafts (src/_drafts/, excluded from production builds) -----------------
+  # --- Drafts (src/_drafts/, excluded from development and production builds) -
   - name: drafts
     label: Drafts
     type: collection
@@ -90,8 +92,10 @@ content:
         label: Authors
         type: string
         list: true
+        default: [burke]
         options:
-          values: [burke]
+          values:
+            - { label: Admin, value: burke }
       - { name: categories, label: Categories, type: string, list: true }
       - { name: postTags, label: Tags, type: string, list: true }
       - { name: toc, label: Table of contents, type: boolean, default: false }
